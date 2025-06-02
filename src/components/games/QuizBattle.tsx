@@ -139,6 +139,14 @@ const QuizBattle = ({ onPointsEarned, user }: QuizBattleProps) => {
     }
   };
 
+  // Atualiza a lista de participantes periodicamente enquanto a sala estiver em espera
+  useEffect(() => {
+    if (gameState === 'waiting' && currentRoom) {
+      const interval = setInterval(() => loadParticipants(currentRoom.id), 2000);
+      return () => clearInterval(interval);
+    }
+  }, [gameState, currentRoom]);
+
   const startGame = async () => {
     if (participants.length < 2) {
       toast.error('Precisa de pelo menos 2 jogadores!');

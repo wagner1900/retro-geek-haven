@@ -1,4 +1,6 @@
 
+import { Mail, Phone, Instagram } from 'lucide-react';
+
 const Footer = () => {
   return (
     <footer className="bg-black/80 py-12 px-4 border-t border-cyan-400/30">
@@ -22,15 +24,29 @@ const Footer = () => {
               Junte pontos, suba no ranking e concorra a prêmios exclusivos!
             </p>
             <div className="flex space-x-4">
-              <div className="w-8 h-8 bg-cyan-400/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-400/40 transition-colors">
-                <span className="text-cyan-400">📧</span>
-              </div>
-              <div className="w-8 h-8 bg-purple-400/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-purple-400/40 transition-colors">
-                <span className="text-purple-400">📱</span>
-              </div>
-              <div className="w-8 h-8 bg-pink-400/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-pink-400/40 transition-colors">
-                <span className="text-pink-400">📸</span>
-              </div>
+              <a
+                href="mailto:contato@believestore.com"
+                className="w-8 h-8 bg-cyan-400/20 rounded-full flex items-center justify-center hover:bg-cyan-400/40 transition-colors"
+                aria-label="Email"
+              >
+                <Mail className="w-4 h-4 text-cyan-400" />
+              </a>
+              <a
+                href="tel:+5511999999999"
+                className="w-8 h-8 bg-purple-400/20 rounded-full flex items-center justify-center hover:bg-purple-400/40 transition-colors"
+                aria-label="Telefone"
+              >
+                <Phone className="w-4 h-4 text-purple-400" />
+              </a>
+              <a
+                href="https://instagram.com/believestor.e"
+                className="w-8 h-8 bg-pink-400/20 rounded-full flex items-center justify-center hover:bg-pink-400/40 transition-colors"
+                aria-label="Instagram @believestor.e"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Instagram className="w-4 h-4 text-pink-400" />
+              </a>
             </div>
           </div>
 
@@ -51,6 +67,7 @@ const Footer = () => {
             <ul className="space-y-2 text-gray-400">
               <li>📧 contato@believestore.com</li>
               <li>📱 (11) 99999-9999</li>
+              <li>📸 <a href="https://instagram.com/believestor.e" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400">@believestor.e</a></li>
               <li>📍 São Paulo, SP</li>
               <li>🕒 Seg-Sex 9h-18h</li>
             </ul>

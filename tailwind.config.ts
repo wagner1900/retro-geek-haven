@@ -19,9 +19,9 @@ export default {
 			}
 		},
 		extend: {
-			fontFamily: {
-				'pixel': ['Orbitron', 'monospace'],
-			},
+                        fontFamily: {
+                                pixel: ['"Press Start 2P"', 'Orbitron', 'monospace'],
+                        },
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

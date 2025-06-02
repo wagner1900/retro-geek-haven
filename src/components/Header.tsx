@@ -1,65 +1,47 @@
 
-import { useState } from 'react';
-import { ShoppingCart, User, Star } from 'lucide-react';
+import { Trophy, User, LogIn } from 'lucide-react';
 
 interface HeaderProps {
   userPoints: number;
+  user: any;
+  onAuthClick: () => void;
 }
 
-const Header = ({ userPoints }: HeaderProps) => {
-  const [cartItems, setCartItems] = useState(0);
-
+const Header = ({ userPoints, user, onAuthClick }: HeaderProps) => {
   return (
-    <header className="relative z-50 bg-black/80 backdrop-blur-sm border-b-2 border-cyan-400">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-lg flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">B</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                BelieveStore
-              </h1>
-              <p className="text-xs text-gray-400">Ultimate Geek Paradise</p>
-            </div>
+    <header className="p-4 bg-black/30 backdrop-blur-sm border-b border-cyan-400/30">
+      <div className="container mx-auto flex justify-between items-center">
+        <div className="flex items-center space-x-4">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            BELIEVESTORE
+          </h1>
+          <div className="hidden md:flex items-center space-x-6 text-white">
+            <a href="#products" className="hover:text-cyan-400 transition-colors">Produtos</a>
+            <a href="#games" className="hover:text-cyan-400 transition-colors">Games</a>
+            <a href="#events" className="hover:text-cyan-400 transition-colors">Eventos</a>
           </div>
-
-          {/* Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <a href="#products" className="text-white hover:text-cyan-400 transition-colors font-pixel">
-              Produtos
-            </a>
-            <a href="#games" className="text-white hover:text-cyan-400 transition-colors font-pixel">
-              Mini-Games
-            </a>
-            <a href="#events" className="text-white hover:text-cyan-400 transition-colors font-pixel">
-              Eventos
-            </a>
-            <a href="#leaderboard" className="text-white hover:text-cyan-400 transition-colors font-pixel">
-              Ranking
-            </a>
-          </nav>
-
-          {/* User actions */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 bg-yellow-400/20 px-3 py-2 rounded-lg">
-              <Star className="w-5 h-5 text-yellow-400" />
-              <span className="text-white font-bold">{userPoints}</span>
-            </div>
-            <button className="relative p-2 text-white hover:text-cyan-400 transition-colors">
-              <ShoppingCart className="w-6 h-6" />
-              {cartItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItems}
-                </span>
-              )}
-            </button>
-            <button className="p-2 text-white hover:text-cyan-400 transition-colors">
-              <User className="w-6 h-6" />
-            </button>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 bg-yellow-400/20 px-4 py-2 rounded-lg">
+            <Trophy className="w-5 h-5 text-yellow-400" />
+            <span className="text-white font-bold">{userPoints} pts</span>
           </div>
+          
+          {user ? (
+            <div className="flex items-center space-x-2 text-cyan-400">
+              <User className="w-5 h-5" />
+              <span className="text-sm hidden md:block">{user.email}</span>
+            </div>
+          ) : (
+            <button
+              onClick={onAuthClick}
+              className="flex items-center space-x-2 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

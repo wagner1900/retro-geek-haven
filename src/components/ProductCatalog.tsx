@@ -1,8 +1,13 @@
 
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
-const ProductCatalog = () => {
+interface ProductCatalogProps {
+  user: any;
+}
+
+const ProductCatalog = ({ user }: ProductCatalogProps) => {
   const categories = [
     {
       name: 'Action Figures',
@@ -30,10 +35,28 @@ const ProductCatalog = () => {
     }
   ];
 
-  const handlePurchase = (productName: string, price: number) => {
-    // Aqui você integrará com o Stripe
-    toast.success(`${productName} adicionado ao carrinho! R$ ${price.toFixed(2)}`);
-    console.log('Integração Stripe aqui para:', productName, price);
+  const handlePurchase = async (productName: string, price: number) => {
+    if (!user) {
+      toast.error('Você precisa estar logado para comprar!');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: { productName, price }
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        // Abrir Stripe Checkout em nova aba
+        window.open(data.url, '_blank');
+        toast.success(`${productName} - Redirecionando para pagamento...`);
+      }
+    } catch (error: any) {
+      toast.error('Erro ao processar pagamento: ' + error.message);
+      console.error('Erro no pagamento:', error);
+    }
   };
 
   return (

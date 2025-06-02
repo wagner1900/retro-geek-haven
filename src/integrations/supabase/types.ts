@@ -9,13 +9,155 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      game_participants: {
+        Row: {
+          id: string
+          joined_at: string
+          player_name: string
+          position: number | null
+          room_id: string | null
+          score: number | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          player_name: string
+          position?: number | null
+          room_id?: string | null
+          score?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          player_name?: string
+          position?: number | null
+          room_id?: string | null
+          score?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_participants_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "game_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      game_rooms: {
+        Row: {
+          created_at: string
+          finished_at: string | null
+          game_type: string
+          id: string
+          max_players: number | null
+          room_code: string
+          started_at: string | null
+          status: string | null
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          finished_at?: string | null
+          game_type: string
+          id?: string
+          max_players?: number | null
+          room_code: string
+          started_at?: string | null
+          status?: string | null
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          finished_at?: string | null
+          game_type?: string
+          id?: string
+          max_players?: number | null
+          room_code?: string
+          started_at?: string | null
+          status?: string | null
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          id: string
+          product_name: string
+          status: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          id?: string
+          product_name: string
+          status?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          id?: string
+          product_name?: string
+          status?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_scores: {
+        Row: {
+          games_played: number | null
+          games_won: number | null
+          id: string
+          last_updated: string
+          player_name: string
+          total_points: number | null
+          user_id: string | null
+        }
+        Insert: {
+          games_played?: number | null
+          games_won?: number | null
+          id?: string
+          last_updated?: string
+          player_name: string
+          total_points?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          games_played?: number | null
+          games_won?: number | null
+          id?: string
+          last_updated?: string
+          player_name?: string
+          total_points?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_room_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

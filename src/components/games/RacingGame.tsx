@@ -41,6 +41,28 @@ const RacingGame = ({ onPointsEarned, user }: RacingGameProps) => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
 
+  // Obter o progresso dos outros jogadores enquanto a corrida estiver acontecendo
+  useEffect(() => {
+    if (gameState !== 'playing' || !currentRoom) return;
+
+    const interval = setInterval(async () => {
+      const { data } = await supabase
+        .from('game_participants')
+        .select('user_id, score')
+        .eq('room_id', currentRoom.id);
+
+      if (data) {
+        const progress: { [key: string]: number } = {};
+        data.forEach(p => {
+          progress[p.user_id] = p.score;
+        });
+        setRaceProgress(progress);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [gameState, currentRoom]);
+
   const updateProgress = async (progress: number) => {
     if (!currentRoom || !user) return;
     

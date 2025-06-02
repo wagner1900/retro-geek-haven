@@ -7,7 +7,9 @@ interface MemoryGameProps {
 }
 
 const MemoryGame = ({ onPointsEarned }: MemoryGameProps) => {
-  const symbols = ['🎮', '🎯', '⭐', '🎪', '🎨', '🎭', '🎪', '🎵'];
+  // Lista de símbolos usados no jogo. Todos precisam ser únicos para
+  // evitar pares extras que quebram a lógica de conclusão.
+  const symbols = ['🎮', '🎯', '⭐', '🎪', '🎨', '🎭', '👾', '🎵'];
   const [cards, setCards] = useState<Array<{ id: number; symbol: string; isFlipped: boolean; isMatched: boolean }>>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [gameStarted, setGameStarted] = useState(false);

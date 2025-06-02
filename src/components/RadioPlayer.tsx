@@ -1,18 +1,19 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2, SkipForward, SkipBack } from 'lucide-react';
+import { Play, Pause, Volume2 } from 'lucide-react';
 
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0);
+  const [currentTrack] = useState(0);
   const [volume, setVolume] = useState(0.7);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const playlist = [
-    { name: 'Anime Lo-fi Mix', artist: 'RetroBeats', url: 'https://www.soundjay.com/misc/bell-ringing-05.wav' },
-    { name: '8-bit Adventure', artist: 'PixelSound', url: 'https://www.soundjay.com/misc/bell-ringing-05.wav' },
-    { name: 'Cyberpunk Nights', artist: 'NeonWave', url: 'https://www.soundjay.com/misc/bell-ringing-05.wav' },
-    { name: 'Game OST Remix', artist: 'RetroMixer', url: 'https://www.soundjay.com/misc/bell-ringing-05.wav' },
+    {
+      name: 'Listen.moe',
+      artist: 'Anime Radio',
+      url: 'https://listen.moe/stream',
+    },
   ];
 
   const togglePlay = () => {
@@ -26,13 +27,6 @@ const RadioPlayer = () => {
     }
   };
 
-  const nextTrack = () => {
-    setCurrentTrack((prev) => (prev + 1) % playlist.length);
-  };
-
-  const prevTrack = () => {
-    setCurrentTrack((prev) => (prev - 1 + playlist.length) % playlist.length);
-  };
 
   useEffect(() => {
     if (audioRef.current) {
@@ -51,30 +45,15 @@ const RadioPlayer = () => {
       <audio
         ref={audioRef}
         src={playlist[currentTrack].url}
-        onEnded={nextTrack}
         loop
       />
 
       <div className="flex items-center justify-center space-x-4 mb-4">
         <button
-          onClick={prevTrack}
-          className="p-2 text-white hover:text-cyan-400 transition-colors"
-        >
-          <SkipBack className="w-5 h-5" />
-        </button>
-        
-        <button
           onClick={togglePlay}
           className="bg-gradient-to-r from-cyan-500 to-purple-500 p-3 rounded-full text-white hover:scale-110 transition-transform"
         >
           {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-        </button>
-        
-        <button
-          onClick={nextTrack}
-          className="p-2 text-white hover:text-cyan-400 transition-colors"
-        >
-          <SkipForward className="w-5 h-5" />
         </button>
       </div>
 

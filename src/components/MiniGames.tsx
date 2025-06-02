@@ -75,7 +75,9 @@ const MiniGames = ({ onPointsEarned, user }: MiniGamesProps) => {
                   <div className="flex items-center justify-center mb-2">
                     <h3 className="text-2xl font-bold text-white">{game.name}</h3>
                     {game.multiplayer && (
-                      <Users className="w-6 h-6 text-cyan-400 ml-2" title="Multiplayer" />
+                      <div className="ml-2" title="Multiplayer">
+                        <Users className="w-6 h-6 text-cyan-400" />
+                      </div>
                     )}
                   </div>
                   <p className="text-gray-300 mb-6">{game.description}</p>

@@ -108,7 +108,7 @@ const SnakeGame = ({ onPointsEarned }: SnakeGameProps) => {
   return (
     <div className="bg-black/60 p-8 rounded-lg border border-green-400/30">
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-green-400 mb-2">Snake Retrô</h3>
+        <h3 className="text-2xl font-bold text-green-400 mb-2 font-pixel">Snake Retrô</h3>
         <p className="text-white mb-4">Score: {score} | Use as setas para controlar</p>
         
         {!gameRunning ? (

@@ -11,12 +11,18 @@ const Hero = () => {
             Sua loja geek definitiva de games e animes com produtos épicos, mini-games e eventos incríveis!
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-            <button className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/25">
+            <a
+              href="#products"
+              className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-cyan-500/25"
+            >
               EXPLORAR PRODUTOS
-            </button>
-            <button className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-pink-500/25">
+            </a>
+            <a
+              href="#games"
+              className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-pink-500/25"
+            >
               JOGAR MINI-GAMES
-            </button>
+            </a>
           </div>
         </div>
       </div>

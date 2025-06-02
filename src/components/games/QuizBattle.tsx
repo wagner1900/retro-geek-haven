@@ -237,7 +237,7 @@ const QuizBattle = ({ onPointsEarned, user }: QuizBattleProps) => {
       <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-purple-400/30 text-center">
         <div className="flex items-center justify-center mb-6">
           <Brain className="w-12 h-12 text-purple-400 mr-4" />
-          <h3 className="text-3xl font-bold text-white">Quiz Battle</h3>
+          <h3 className="text-3xl font-bold text-white font-pixel">Quiz Battle</h3>
         </div>
         <p className="text-gray-300 mb-8">Teste seus conhecimentos geek contra outros jogadores!</p>
         
@@ -272,7 +272,7 @@ const QuizBattle = ({ onPointsEarned, user }: QuizBattleProps) => {
   if (gameState === 'waiting') {
     return (
       <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-purple-400/30 text-center">
-        <h3 className="text-2xl font-bold text-white mb-4">Sala: {roomCode}</h3>
+        <h3 className="text-2xl font-bold text-white mb-4 font-pixel">Sala: {roomCode}</h3>
         <div className="flex items-center justify-center mb-6">
           <Users className="w-8 h-8 text-purple-400 mr-2" />
           <span className="text-white">{participants.length}/4 jogadores</span>
@@ -314,7 +314,7 @@ const QuizBattle = ({ onPointsEarned, user }: QuizBattleProps) => {
           </div>
         </div>
 
-        <h3 className="text-xl font-bold text-white mb-6">{question.question}</h3>
+        <h3 className="text-xl font-bold text-white mb-6 font-pixel">{question.question}</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {question.options.map((option, index) => (
@@ -344,7 +344,7 @@ const QuizBattle = ({ onPointsEarned, user }: QuizBattleProps) => {
     return (
       <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-purple-400/30 text-center">
         <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-white mb-4">Jogo Finalizado!</h3>
+        <h3 className="text-2xl font-bold text-white mb-4 font-pixel">Jogo Finalizado!</h3>
         <p className="text-xl text-purple-400 mb-6">Sua pontuação: {score}</p>
         
         <button

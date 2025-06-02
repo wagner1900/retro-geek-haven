@@ -239,7 +239,7 @@ const RacingGame = ({ onPointsEarned, user }: RacingGameProps) => {
       <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-orange-400/30 text-center">
         <div className="flex items-center justify-center mb-6">
           <Zap className="w-12 h-12 text-orange-400 mr-4" />
-          <h3 className="text-3xl font-bold text-white">Corrida Espacial</h3>
+          <h3 className="text-3xl font-bold text-white font-pixel">Corrida Espacial</h3>
         </div>
         <p className="text-gray-300 mb-8">Aperte ESPAÇO o mais rápido possível para vencer!</p>
         
@@ -314,7 +314,7 @@ const RacingGame = ({ onPointsEarned, user }: RacingGameProps) => {
     return (
       <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-orange-400/30">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold text-white">Corrida Espacial</h3>
+          <h3 className="text-2xl font-bold text-white font-pixel">Corrida Espacial</h3>
           <div className="text-orange-400 font-bold">
             Progresso: {playerPosition.toFixed(1)}%
           </div>

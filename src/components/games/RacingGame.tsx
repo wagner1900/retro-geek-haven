@@ -36,6 +36,16 @@ const RacingGame = ({ onPointsEarned, user }: RacingGameProps) => {
     }
   }, [gameState, playerPosition, raceFinished]);
 
+  const accelerate = () => {
+    if (gameState !== 'playing' || raceFinished) return;
+    const newPosition = Math.min(playerPosition + 2, FINISH_LINE);
+    setPlayerPosition(newPosition);
+    updateProgress(newPosition);
+    if (newPosition >= FINISH_LINE && !raceFinished) {
+      finishRace();
+    }
+  };
+
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
@@ -358,8 +368,14 @@ const RacingGame = ({ onPointsEarned, user }: RacingGameProps) => {
 
         <div className="text-center">
           <p className="text-white text-xl mb-4">
-            Aperte <span className="bg-orange-500 px-2 py-1 rounded font-bold">ESPAÇO</span> para acelerar!
+            Aperte <span className="bg-orange-500 px-2 py-1 rounded font-bold">ESPAÇO</span> ou use o botão abaixo para acelerar!
           </p>
+          <button
+            onClick={accelerate}
+            className="md:hidden mb-4 bg-orange-500 text-white px-6 py-3 rounded-full font-bold active:bg-orange-600"
+          >
+            ACELERAR
+          </button>
           <div className="flex justify-center space-x-4">
             <Flag className="w-8 h-8 text-yellow-400" />
             <span className="text-white text-lg">Meta: 100%</span>

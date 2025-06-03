@@ -36,44 +36,45 @@ const MemoryGame = ({ onPointsEarned }: MemoryGameProps) => {
 
   const handleCardClick = (cardId: number) => {
     if (!gameStarted || gameCompleted) return;
-    
+
     const card = cards.find(c => c.id === cardId);
     if (!card || card.isFlipped || card.isMatched || flippedCards.length >= 2) return;
 
-    const newFlippedCards = [...flippedCards, cardId];
-    setFlippedCards(newFlippedCards);
-    
-    setCards(prev => prev.map(c => 
+    setCards(prev => prev.map(c =>
       c.id === cardId ? { ...c, isFlipped: true } : c
     ));
 
-    if (newFlippedCards.length === 2) {
-      setMoves(prev => prev + 1);
-      
-      setTimeout(() => {
-        const [firstId, secondId] = newFlippedCards;
-        const firstCard = cards.find(c => c.id === firstId);
-        const secondCard = cards.find(c => c.id === secondId);
+    setFlippedCards(prev => [...prev, cardId]);
+  };
 
-        if (firstCard && secondCard && firstCard.symbol === secondCard.symbol) {
-          setCards(prev => prev.map(c => 
-            c.id === firstId || c.id === secondId 
-              ? { ...c, isMatched: true }
-              : c
-          ));
-          toast.success('Par encontrado! 🎉');
-        } else {
-          setCards(prev => prev.map(c => 
-            c.id === firstId || c.id === secondId 
+  useEffect(() => {
+    if (flippedCards.length === 2) {
+      setMoves(prev => prev + 1);
+      const [firstId, secondId] = flippedCards;
+      const firstCard = cards.find(c => c.id === firstId);
+      const secondCard = cards.find(c => c.id === secondId);
+
+      if (firstCard && secondCard && firstCard.symbol === secondCard.symbol) {
+        setCards(prev => prev.map(c =>
+          c.id === firstId || c.id === secondId
+            ? { ...c, isMatched: true }
+            : c
+        ));
+        toast.success('Par encontrado! 🎉');
+        setFlippedCards([]);
+      } else {
+        const timeout = setTimeout(() => {
+          setCards(prev => prev.map(c =>
+            c.id === firstId || c.id === secondId
               ? { ...c, isFlipped: false }
               : c
           ));
-        }
-        
-        setFlippedCards([]);
-      }, 1000);
+          setFlippedCards([]);
+        }, 1000);
+        return () => clearTimeout(timeout);
+      }
     }
-  };
+  }, [flippedCards, cards]);
 
   useEffect(() => {
     if (cards.length > 0 && cards.every(card => card.isMatched)) {

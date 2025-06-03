@@ -17,24 +17,34 @@ const SnakeGame = ({ onPointsEarned }: SnakeGameProps) => {
   const [gameRunning, setGameRunning] = useState(false);
   const [score, setScore] = useState(0);
 
-  const generateFood = useCallback(() => {
-    return {
-      x: Math.floor(Math.random() * BOARD_SIZE),
-      y: Math.floor(Math.random() * BOARD_SIZE),
-    };
-  }, []);
+  const generateFood = useCallback((currentSnake: Array<{ x: number; y: number }> = snake) => {
+    let newFood;
+    do {
+      newFood = {
+        x: Math.floor(Math.random() * BOARD_SIZE),
+        y: Math.floor(Math.random() * BOARD_SIZE),
+      };
+    } while (currentSnake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+
+    return newFood;
+  }, [snake]);
 
   const resetGame = () => {
-    setSnake(INITIAL_SNAKE);
-    setFood(INITIAL_FOOD);
+    const initialSnake = INITIAL_SNAKE;
+    setSnake(initialSnake);
+    setFood(generateFood(initialSnake));
     setDirection({ x: 0, y: 0 });
     setScore(0);
     setGameRunning(false);
   };
 
   const startGame = () => {
-    setGameRunning(true);
+    const initialSnake = INITIAL_SNAKE;
+    setSnake(initialSnake);
+    setFood(generateFood(initialSnake));
+    setScore(0);
     setDirection({ x: 1, y: 0 });
+    setGameRunning(true);
   };
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {

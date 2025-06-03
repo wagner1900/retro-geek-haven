@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SnakeGameProps {
@@ -47,8 +48,8 @@ const SnakeGame = ({ onPointsEarned }: SnakeGameProps) => {
     setGameRunning(true);
   };
 
-  const handleKeyPress = useCallback((e: KeyboardEvent) => {
-    if (!gameRunning) return;
+const handleKeyPress = useCallback((e: KeyboardEvent) => {
+  if (!gameRunning) return;
 
     switch (e.key) {
       case 'ArrowUp':
@@ -65,6 +66,15 @@ const SnakeGame = ({ onPointsEarned }: SnakeGameProps) => {
         break;
     }
   }, [gameRunning]);
+
+  const moveUp = () =>
+    setDirection(prev => (prev.y === 0 ? { x: 0, y: -1 } : prev));
+  const moveDown = () =>
+    setDirection(prev => (prev.y === 0 ? { x: 0, y: 1 } : prev));
+  const moveLeft = () =>
+    setDirection(prev => (prev.x === 0 ? { x: -1, y: 0 } : prev));
+  const moveRight = () =>
+    setDirection(prev => (prev.x === 0 ? { x: 1, y: 0 } : prev));
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
@@ -166,6 +176,35 @@ const SnakeGame = ({ onPointsEarned }: SnakeGameProps) => {
             />
           );
         })}
+      </div>
+      {/* Mobile Controls */}
+      <div className="mt-4 md:hidden flex flex-col items-center space-y-2">
+        <button
+          onClick={moveUp}
+          className="p-3 bg-gray-700 rounded-full active:bg-gray-600"
+        >
+          <ArrowUp className="w-6 h-6 text-white" />
+        </button>
+        <div className="flex space-x-4">
+          <button
+            onClick={moveLeft}
+            className="p-3 bg-gray-700 rounded-full active:bg-gray-600"
+          >
+            <ArrowLeft className="w-6 h-6 text-white" />
+          </button>
+          <button
+            onClick={moveDown}
+            className="p-3 bg-gray-700 rounded-full active:bg-gray-600"
+          >
+            <ArrowDown className="w-6 h-6 text-white" />
+          </button>
+          <button
+            onClick={moveRight}
+            className="p-3 bg-gray-700 rounded-full active:bg-gray-600"
+          >
+            <ArrowRight className="w-6 h-6 text-white" />
+          </button>
+        </div>
       </div>
     </div>
   );

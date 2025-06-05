@@ -75,6 +75,9 @@ const PaymentSuccess = () => {
           <p className="text-gray-300">
             Você receberá um email de confirmação em breve com os detalhes da entrega.
           </p>
+          <p className="text-gray-300">
+            O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.
+          </p>
           
           <button
             onClick={() => window.location.href = '/'}

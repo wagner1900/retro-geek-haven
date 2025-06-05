@@ -34,6 +34,10 @@ npm i
 
 # Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
+
+# Optional: set the URL used in email confirmations
+cp .env.example .env
+# Update `VITE_EMAIL_REDIRECT_URL` in `.env` with your deployed domain
 ```
 
 **Edit a file directly in GitHub**

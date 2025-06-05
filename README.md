@@ -37,7 +37,9 @@ npm run dev
 
 # Optional: set the URL used in email confirmations
 cp .env.example .env
-# Update `VITE_EMAIL_REDIRECT_URL` in `.env` with your deployed domain
+# `.env.example` is preconfigured for
+# https://believestoresualojageek.netlify.app.
+# Update `VITE_EMAIL_REDIRECT_URL` in `.env` if you deploy elsewhere
 ```
 
 **Edit a file directly in GitHub**

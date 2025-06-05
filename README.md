@@ -77,3 +77,17 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Stripe setup
+
+The product catalog loads items directly from your Stripe account using a Supabase Edge Function. Before running in production, deploy the `list-products` function and add your Stripe secret key:
+
+1. Deploy the function:
+
+   ```sh
+   supabase functions deploy list-products
+   ```
+
+2. In the Supabase dashboard, go to **Project Settings → API → Function Secrets** and add a variable named `STRIPE_SECRET_KEY` with your secret key value.
+
+Without this configuration the catalog will show an error when trying to load products.

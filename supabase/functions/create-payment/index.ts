@@ -30,7 +30,10 @@ serve(async (req) => {
 
     const { productName, price } = await req.json();
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Usar a chave secreta do Stripe configurada
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "rk_test_51RVu4EGhuENb8MyVpNs3IxxeqIHDbLlphOF0tfgZsOS35d4mz6aprdxGdDBj4nToGPhbIgl7CAEbtvvleoAPArzk00jAk5UBMf";
+    
+    const stripe = new Stripe(stripeKey, {
       apiVersion: "2023-10-16",
     });
 
@@ -77,6 +80,7 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
+    console.error('Erro ao criar pagamento:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

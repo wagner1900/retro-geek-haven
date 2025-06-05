@@ -1,3 +1,4 @@
+
 import { useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -61,13 +62,17 @@ const Checkout = () => {
         body: { productName, price: finalPrice }
       });
       if (error) throw error;
-      const stripe = (window as any).Stripe('pk_live_51RVu3jGmln2evrsdpV0k42BYvJx80MleudbQoIq5eixAZEec5TRzNzlJC3m3VqSXT2HWq0zWA23l2wOX53sOZoUu00JUcTNjgT');
+      
+      // Usar a chave pública do Stripe (test key)
+      const stripe = (window as any).Stripe('pk_test_51RVu4EGhuENb8MyV7xBzSJv8a32jWb0aB8bkZcXWEJWR8qE23P2PrL3KsZmG6qYSVOLDiU6bxNw7IEOkM1F3xvrt00KiEjOyEA');
+      
       if (stripe && data.sessionId) {
         await stripe.redirectToCheckout({ sessionId: data.sessionId });
       } else if (data.url) {
         window.location.href = data.url;
       }
     } catch (e: any) {
+      console.error('Erro ao iniciar pagamento:', e);
       toast.error('Erro ao iniciar pagamento');
     } finally {
       setLoadingPay(false);

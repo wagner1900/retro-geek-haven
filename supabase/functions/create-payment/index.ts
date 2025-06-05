@@ -72,7 +72,7 @@ serve(async (req) => {
       status: "pending"
     });
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    return new Response(JSON.stringify({ url: session.url, sessionId: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

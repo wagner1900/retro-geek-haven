@@ -21,69 +21,105 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Configurar listener de mudanças de autenticação PRIMEIRO
+    let mounted = true;
+
+    // Configurar listener de mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth event:', event, session?.user?.email);
+        if (!mounted) return;
+        
+        console.log('Auth state change:', event, session?.user?.email);
         
         setSession(session);
         setUser(session?.user || null);
         
         if (event === 'SIGNED_OUT') {
           setShowAuth(false);
-          // Limpar pontuação local se necessário
+          // Limpar pontuação local
           localStorage.removeItem('believestore_points');
           setUserPoints(0);
+          console.log('Usuário deslogado, dados limpos');
         }
         
         if (event === 'SIGNED_IN' && session?.user) {
           setShowAuth(false);
-          // Carregar pontuação do usuário após login
+          console.log('Usuário logado:', session.user.email);
+          
+          // Carregar pontuação do usuário após login (com delay para evitar conflitos)
           setTimeout(() => {
-            loadUserPoints(session.user.id);
-          }, 0);
+            if (mounted) {
+              loadUserPoints(session.user.id);
+            }
+          }, 500);
+        }
+        
+        if (event === 'TOKEN_REFRESHED') {
+          console.log('Token atualizado para:', session?.user?.email);
         }
         
         setLoading(false);
       }
     );
 
-    // DEPOIS verificar sessão existente
+    // Verificar sessão existente
     const getInitialSession = async () => {
       try {
+        console.log('Verificando sessão existente...');
         const { data: { session }, error } = await supabase.auth.getSession();
+        
         if (error) {
           console.error('Erro ao obter sessão:', error);
-        }
-        setSession(session);
-        setUser(session?.user || null);
-        
-        if (session?.user) {
+          // Se houver erro, limpar estado
+          localStorage.removeItem('believestore_points');
+          setUserPoints(0);
+        } else if (session?.user) {
+          console.log('Sessão existente encontrada:', session.user.email);
+          setSession(session);
+          setUser(session.user);
           loadUserPoints(session.user.id);
+        } else {
+          console.log('Nenhuma sessão ativa encontrada');
         }
       } catch (error) {
         console.error('Erro ao inicializar sessão:', error);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     getInitialSession();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const loadUserPoints = async (userId: string) => {
     try {
-      const { data: userScore } = await supabase
+      console.log('Carregando pontos para usuário:', userId);
+      
+      const { data: userScore, error } = await supabase
         .from('user_scores')
         .select('total_points')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
+
+      if (error) {
+        console.error('Erro ao carregar pontuação:', error);
+        return;
+      }
 
       if (userScore) {
+        console.log('Pontos carregados:', userScore.total_points);
         setUserPoints(userScore.total_points);
         localStorage.setItem('believestore_points', userScore.total_points.toString());
+      } else {
+        console.log('Nenhuma pontuação encontrada, mantendo 0');
+        setUserPoints(0);
+        localStorage.setItem('believestore_points', '0');
       }
     } catch (error) {
       console.error('Erro ao carregar pontuação:', error);
@@ -95,6 +131,8 @@ const Index = () => {
     setUserPoints(newPoints);
     localStorage.setItem('believestore_points', newPoints.toString());
     
+    console.log(`Pontos adicionados: ${points}, Total: ${newPoints}`);
+    
     // Atualizar pontuação no banco se o usuário estiver logado
     if (user) {
       updateUserScore(newPoints);
@@ -103,30 +141,47 @@ const Index = () => {
 
   const updateUserScore = async (points: number) => {
     try {
+      console.log('Atualizando pontuação no banco:', points);
+      
       const { data: existingScore } = await supabase
         .from('user_scores')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      const playerName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'Player';
+      const playerName = user.user_metadata?.display_name || 
+                        user.user_metadata?.full_name || 
+                        user.email?.split('@')[0] || 
+                        'Player';
 
       if (existingScore) {
-        await supabase
+        const { error } = await supabase
           .from('user_scores')
           .update({
             total_points: points,
             last_updated: new Date().toISOString()
           })
           .eq('user_id', user.id);
+          
+        if (error) {
+          console.error('Erro ao atualizar pontuação:', error);
+        } else {
+          console.log('Pontuação atualizada com sucesso');
+        }
       } else {
-        await supabase
+        const { error } = await supabase
           .from('user_scores')
           .insert({
             user_id: user.id,
             player_name: playerName,
             total_points: points
           });
+          
+        if (error) {
+          console.error('Erro ao inserir pontuação:', error);
+        } else {
+          console.log('Nova pontuação criada');
+        }
       }
     } catch (error) {
       console.error('Erro ao atualizar pontuação:', error);
@@ -134,9 +189,15 @@ const Index = () => {
   };
 
   const handleAuthChange = async () => {
-    // Recarregar dados do usuário
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Recarregando dados do usuário...');
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error('Erro ao recarregar sessão:', error);
+        return;
+      }
+      
       setSession(session);
       setUser(session?.user || null);
       
@@ -151,7 +212,7 @@ const Index = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-white text-xl">Carregando...</div>
+        <div className="text-white text-xl animate-pulse">Carregando...</div>
       </div>
     );
   }
@@ -174,7 +235,7 @@ const Index = () => {
         
         {showAuth && !user && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="relative">
+            <div className="relative w-full max-w-md">
               <button
                 onClick={() => setShowAuth(false)}
                 className="absolute -top-4 -right-4 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors z-10"

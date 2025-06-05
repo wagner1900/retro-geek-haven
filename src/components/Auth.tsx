@@ -39,8 +39,16 @@ const Auth = ({ user, onAuthChange }: AuthProps) => {
             }
           }
         });
-        if (error) throw error;
-        toast.success('Conta criada! Verifique seu email.');
+        if (error) {
+          if (error.message && error.message.toLowerCase().includes('already')) {
+            toast.error('Email j\u00e1 cadastrado. Tente fazer login.');
+            setIsLogin(true);
+          } else {
+            throw error;
+          }
+        } else {
+          toast.success('Conta criada! Verifique seu email.');
+        }
       }
       onAuthChange();
     } catch (error: any) {

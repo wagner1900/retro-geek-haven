@@ -11,8 +11,10 @@ export type Database = {
     Tables: {
       game_participants: {
         Row: {
+          finish_time: number | null
           id: string
           joined_at: string
+          obstacles_hit: number | null
           player_name: string
           position: number | null
           room_id: string | null
@@ -20,8 +22,10 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          finish_time?: number | null
           id?: string
           joined_at?: string
+          obstacles_hit?: number | null
           player_name: string
           position?: number | null
           room_id?: string | null
@@ -29,8 +33,10 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          finish_time?: number | null
           id?: string
           joined_at?: string
+          obstacles_hit?: number | null
           player_name?: string
           position?: number | null
           room_id?: string | null
@@ -54,6 +60,7 @@ export type Database = {
           game_type: string
           id: string
           max_players: number | null
+          obstacles: Json | null
           room_code: string
           started_at: string | null
           status: string | null
@@ -65,6 +72,7 @@ export type Database = {
           game_type: string
           id?: string
           max_players?: number | null
+          obstacles?: Json | null
           room_code: string
           started_at?: string | null
           status?: string | null
@@ -76,6 +84,7 @@ export type Database = {
           game_type?: string
           id?: string
           max_players?: number | null
+          obstacles?: Json | null
           room_code?: string
           started_at?: string | null
           status?: string | null
@@ -149,6 +158,45 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_scores: {
+        Row: {
+          created_at: string
+          games_played: number | null
+          games_won: number | null
+          id: string
+          player_name: string
+          total_points: number | null
+          updated_at: string
+          user_id: string | null
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          games_played?: number | null
+          games_won?: number | null
+          id?: string
+          player_name: string
+          total_points?: number | null
+          updated_at?: string
+          user_id?: string | null
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          games_played?: number | null
+          games_won?: number | null
+          id?: string
+          player_name?: string
+          total_points?: number | null
+          updated_at?: string
+          user_id?: string | null
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -157,6 +205,17 @@ export type Database = {
       generate_room_code: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_current_week_range: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          week_start: string
+          week_end: string
+        }[]
+      }
+      reset_weekly_scores: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {

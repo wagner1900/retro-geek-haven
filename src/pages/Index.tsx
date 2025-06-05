@@ -13,27 +13,82 @@ import Auth from '@/components/Auth';
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
   const [showAuth, setShowAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [userPoints, setUserPoints] = useState(() => {
     return parseInt(localStorage.getItem('believestore_points') || '0');
   });
 
   useEffect(() => {
-    // Verificar usuário atual
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    // Escutar mudanças de autenticação
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-      if (event === 'SIGNED_OUT') {
-        setShowAuth(false);
+    // Configurar listener de mudanças de autenticação PRIMEIRO
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth event:', event, session?.user?.email);
+        
+        setSession(session);
+        setUser(session?.user || null);
+        
+        if (event === 'SIGNED_OUT') {
+          setShowAuth(false);
+          // Limpar pontuação local se necessário
+          localStorage.removeItem('believestore_points');
+          setUserPoints(0);
+        }
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          setShowAuth(false);
+          // Carregar pontuação do usuário após login
+          setTimeout(() => {
+            loadUserPoints(session.user.id);
+          }, 0);
+        }
+        
+        setLoading(false);
       }
-    });
+    );
+
+    // DEPOIS verificar sessão existente
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Erro ao obter sessão:', error);
+        }
+        setSession(session);
+        setUser(session?.user || null);
+        
+        if (session?.user) {
+          loadUserPoints(session.user.id);
+        }
+      } catch (error) {
+        console.error('Erro ao inicializar sessão:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getInitialSession();
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const loadUserPoints = async (userId: string) => {
+    try {
+      const { data: userScore } = await supabase
+        .from('user_scores')
+        .select('total_points')
+        .eq('user_id', userId)
+        .single();
+
+      if (userScore) {
+        setUserPoints(userScore.total_points);
+        localStorage.setItem('believestore_points', userScore.total_points.toString());
+      }
+    } catch (error) {
+      console.error('Erro ao carregar pontuação:', error);
+    }
+  };
 
   const addPoints = (points: number) => {
     const newPoints = userPoints + points;
@@ -52,7 +107,7 @@ const Index = () => {
         .from('user_scores')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       const playerName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'Player';
 
@@ -78,12 +133,28 @@ const Index = () => {
     }
   };
 
-  const handleAuthChange = () => {
+  const handleAuthChange = async () => {
     // Recarregar dados do usuário
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setUser(session?.user || null);
+      
+      if (session?.user) {
+        loadUserPoints(session.user.id);
+      }
+    } catch (error) {
+      console.error('Erro ao recarregar dados do usuário:', error);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-xl">Carregando...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">

@@ -33,6 +33,7 @@ const Auth = ({ user, onAuthChange }: AuthProps) => {
           email,
           password,
           options: {
+            emailRedirectTo: window.location.origin,
             data: {
               display_name: name,
             }

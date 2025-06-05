@@ -5,37 +5,38 @@ const EventsSection = () => {
   const events = [
     {
       id: 1,
-      title: 'BelieveCon 2024',
-      date: '15 de Junho',
-      time: '14:00 - 22:00',
-      location: 'Centro de Convenções São Paulo',
-      address: 'Rua das Convenções, 123 - Vila Olímpia, SP',
-      description: 'O maior evento geek da América Latina! Cosplay, games, mangás e muito mais.',
-      attendees: 2500,
-      image: '/placeholder.svg'
+      title: 'Kame Rider - Legado',
+      date: '7 de Junho - Sábado',
+      time: '10h às 20h',
+      location: 'Centro Cultural Banco do Nordeste',
+      address: 'Fortaleza, CE',
+      description:
+        'Celebração do herói japonês com exibições e bate-papos entre fãs.',
+      attendees: 300,
+      image: '/placeholder.svg',
     },
     {
       id: 2,
-      title: 'Torneio de Games Retrô',
-      date: '28 de Junho',
-      time: '16:00 - 20:00',
-      location: 'BelieveStore Arena',
-      address: 'Av. Paulista, 456 - Bela Vista, SP',
-      description: 'Competição épica de jogos clássicos! Street Fighter, Pac-Man e muito mais.',
-      attendees: 150,
-      image: '/placeholder.svg'
+      title: 'Aldeia Geek 2° edição',
+      date: '5 de Julho - Sábado',
+      time: 'Horário a definir',
+      location: 'Aldeia Hip Hop',
+      address: 'Caucaia, CE',
+      description: 'Encontro geek com muitas atrações e cultura pop.',
+      attendees: 400,
+      image: '/placeholder.svg',
     },
     {
       id: 3,
-      title: 'Noite do Anime',
-      date: '10 de Julho',
-      time: '19:00 - 01:00',
-      location: 'Club Otaku',
-      address: 'Rua dos Animes, 789 - Liberdade, SP',
-      description: 'Sessão especial de animes clássicos com DJs tocando soundtracks épicas!',
-      attendees: 300,
-      image: '/placeholder.svg'
-    }
+      title: 'Bazar HQ',
+      date: '15 de Junho - Domingo',
+      time: '13h às 18h30',
+      location: 'Praça Luiza Távora',
+      address: 'Fortaleza, CE',
+      description: 'Feira de quadrinhos e colecionáveis ao ar livre.',
+      attendees: 250,
+      image: '/placeholder.svg',
+    },
   ];
 
   return (

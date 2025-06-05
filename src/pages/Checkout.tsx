@@ -8,7 +8,8 @@ const Checkout = () => {
   const productName = searchParams.get('name') || '';
   const productPrice = parseFloat(searchParams.get('price') || '0');
   const [cep, setCep] = useState('');
-  const [shipping, setShipping] = useState<number | null>(null);
+  const fallbackShipping = 20;
+  const [shipping, setShipping] = useState<number>(fallbackShipping);
   const [loadingFrete, setLoadingFrete] = useState(false);
   const [loadingPay, setLoadingPay] = useState(false);
 
@@ -39,19 +40,20 @@ const Checkout = () => {
       const data = await res.json();
       const valor = data?.cServico?.[0]?.Valor || '0';
       const price = parseFloat(valor.replace(',', '.'));
-      setShipping(price);
+      if (!isNaN(price) && price > 0) {
+        setShipping(price);
+      } else {
+        setShipping(fallbackShipping);
+      }
     } catch (e) {
-      toast.error('Erro ao calcular frete');
+      toast.error('Erro ao calcular frete. Usando valor padrão.');
+      setShipping(fallbackShipping);
     } finally {
       setLoadingFrete(false);
     }
   };
 
   const handlePayment = async () => {
-    if (shipping === null) {
-      toast.error('Calcule o frete antes de continuar');
-      return;
-    }
     setLoadingPay(true);
     try {
       const finalPrice = productPrice + shipping;
@@ -72,7 +74,7 @@ const Checkout = () => {
     }
   };
 
-  const total = shipping !== null ? (productPrice + shipping) : productPrice;
+  const total = productPrice + shipping;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
@@ -97,12 +99,10 @@ const Checkout = () => {
           {loadingFrete ? 'Calculando...' : 'Calcular Frete'}
         </button>
 
-        {shipping !== null && (
-          <div className="text-center">
-            <p className="text-lg">Frete: <strong>R$ {shipping.toFixed(2)}</strong></p>
-            <p className="text-lg">Total: <strong>R$ {total.toFixed(2)}</strong></p>
-          </div>
-        )}
+        <div className="text-center">
+          <p className="text-lg">Frete: <strong>R$ {shipping.toFixed(2)}</strong></p>
+          <p className="text-lg">Total: <strong>R$ {total.toFixed(2)}</strong></p>
+        </div>
 
         <p className="text-sm text-center text-gray-300">
           O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.

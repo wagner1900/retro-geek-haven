@@ -29,11 +29,12 @@ const Auth = ({ user, onAuthChange }: AuthProps) => {
         if (error) throw error;
         toast.success('Login realizado com sucesso!');
       } else {
+        const EMAIL_REDIRECT_URL = import.meta.env.VITE_EMAIL_REDIRECT_URL || window.location.origin;
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: EMAIL_REDIRECT_URL,
             data: {
               display_name: name,
             }

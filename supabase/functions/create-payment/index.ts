@@ -31,7 +31,7 @@ serve(async (req) => {
     const { productName, price } = await req.json();
 
     // Usar a chave secreta do Stripe configurada
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "rk_test_51RVu4EGhuENb8MyVpNs3IxxeqIHDbLlphOF0tfgZsOS35d4mz6aprdxGdDBj4nToGPhbIgl7CAEbtvvleoAPArzk00jAk5UBMf";
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "sk_test_REPLACE_ME";
     
     const stripe = new Stripe(stripeKey, {
       apiVersion: "2023-10-16",

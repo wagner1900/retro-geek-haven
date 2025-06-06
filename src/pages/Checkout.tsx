@@ -70,8 +70,9 @@ const Checkout = () => {
       });
       if (error) throw error;
       
-      // Usar a chave pública do Stripe (test key)
-      const stripe = (window as any).Stripe('pk_test_51RVu4EGhuENb8MyV7xBzSJv8a32jWb0aB8bkZcXWEJWR8qE23P2PrL3KsZmG6qYSVOLDiU6bxNw7IEOkM1F3xvrt00KiEjOyEA');
+      // Usar a chave pública do Stripe a partir das variáveis de ambiente
+      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+      const stripe = (window as any).Stripe(stripeKey);
       
       if (stripe && data.sessionId) {
         await stripe.redirectToCheckout({ sessionId: data.sessionId });

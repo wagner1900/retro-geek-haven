@@ -58,8 +58,15 @@ const Checkout = () => {
     setLoadingPay(true);
     try {
       const finalPrice = productPrice + shipping;
+      
+      // Criar nome do produto incluindo informação do frete
+      const productNameWithShipping = `${productName} (inclui frete: R$ ${shipping.toFixed(2)})`;
+      
       const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: { productName, price: finalPrice }
+        body: { 
+          productName: productNameWithShipping, 
+          price: finalPrice 
+        }
       });
       if (error) throw error;
       
@@ -104,9 +111,20 @@ const Checkout = () => {
           {loadingFrete ? 'Calculando...' : 'Calcular Frete'}
         </button>
 
-        <div className="text-center">
-          <p className="text-lg">Frete: <strong>R$ {shipping.toFixed(2)}</strong></p>
-          <p className="text-lg">Total: <strong>R$ {total.toFixed(2)}</strong></p>
+        <div className="bg-white/10 rounded-lg p-4 space-y-2">
+          <div className="flex justify-between">
+            <span>Produto:</span>
+            <span>R$ {productPrice.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Frete:</span>
+            <span>R$ {shipping.toFixed(2)}</span>
+          </div>
+          <hr className="border-cyan-400/30" />
+          <div className="flex justify-between text-lg font-bold text-cyan-400">
+            <span>Total a Pagar:</span>
+            <span>R$ {total.toFixed(2)}</span>
+          </div>
         </div>
 
         <p className="text-sm text-center text-gray-300">
@@ -118,7 +136,7 @@ const Checkout = () => {
           className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-3 rounded-lg hover:scale-105 transition-transform"
           disabled={loadingPay}
         >
-          {loadingPay ? 'Processando...' : 'Pagar com Stripe'}
+          {loadingPay ? 'Processando...' : `Pagar R$ ${total.toFixed(2)}`}
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
-
 import { ShoppingCart, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Product {
@@ -21,6 +21,7 @@ interface ProductCatalogProps {
 }
 
 const ProductCatalog = ({ user }: ProductCatalogProps) => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -68,13 +69,19 @@ const ProductCatalog = ({ user }: ProductCatalogProps) => {
       return;
     }
 
+    console.log('Iniciando compra para produto:', product);
+    
     const params = new URLSearchParams({
       name: product.name,
       price: product.price.toString(),
       product_id: product.id,
       price_id: product.price_id || ''
     });
-    window.location.href = `/checkout?${params.toString()}`;
+    
+    const checkoutUrl = `/checkout?${params.toString()}`;
+    console.log('Navegando para:', checkoutUrl);
+    
+    navigate(checkoutUrl);
   };
 
   const handleRefresh = () => {

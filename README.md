@@ -39,7 +39,10 @@ npm run dev
 cp .env.example .env
 # `.env.example` is preconfigured for
 # https://believestoresualojageek.netlify.app.
-# Update `VITE_EMAIL_REDIRECT_URL` in `.env` if you deploy elsewhere
+# Update `VITE_EMAIL_REDIRECT_URL` in `.env` if you deploy elsewhere.
+# Configure your Stripe keys as well:
+# - `VITE_STRIPE_PUBLISHABLE_KEY` for the frontend
+# - `STRIPE_SECRET_KEY` for the Supabase Edge functions
 ```
 
 **Edit a file directly in GitHub**

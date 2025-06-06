@@ -16,7 +16,7 @@ serve(async (req) => {
     console.log('Iniciando busca de produtos do Stripe...');
     
     // Usar a chave secreta do Stripe configurada
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "rk_test_51RVu4EGhuENb8MyVpNs3IxxeqIHDbLlphOF0tfgZsOS35d4mz6aprdxGdDBj4nToGPhbIgl7CAEbtvvleoAPArzk00jAk5UBMf";
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "sk_test_REPLACE_ME";
     
     if (!stripeKey) {
       throw new Error("STRIPE_SECRET_KEY não encontrada");

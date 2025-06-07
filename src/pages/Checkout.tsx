@@ -9,7 +9,7 @@ const Checkout = () => {
   const productName = searchParams.get('name') || '';
   const productPrice = parseFloat(searchParams.get('price') || '0');
   const [cep, setCep] = useState('');
-  const fallbackShipping = 20;
+  const fallbackShipping = 35; // Valor padrão mais alto para longas distâncias
   const [shipping, setShipping] = useState<number>(fallbackShipping);
   const [loadingFrete, setLoadingFrete] = useState(false);
   const [loadingPay, setLoadingPay] = useState(false);
@@ -44,34 +44,57 @@ const Checkout = () => {
     try {
       const sanitizedCep = cep.replace(/\D/g, '');
       
-      // Simulação de cálculo de frete baseado na região
+      // Cálculo de frete baseado na distância de Fortaleza, CE
       const cepNumber = parseInt(sanitizedCep);
       let calculatedShipping = fallbackShipping;
 
-      if (cepNumber >= 1000000 && cepNumber <= 19999999) {
-        // Região Sudeste
-        calculatedShipping = 15;
-      } else if (cepNumber >= 20000000 && cepNumber <= 28999999) {
-        // Rio de Janeiro
+      // Ceará (região local) - frete mais barato
+      if (cepNumber >= 60000000 && cepNumber <= 63999999) {
+        calculatedShipping = 12;
+      } 
+      // Nordeste (estados vizinhos) - frete médio
+      else if (
+        (cepNumber >= 40000000 && cepNumber <= 48999999) || // Bahia
+        (cepNumber >= 50000000 && cepNumber <= 56999999) || // Pernambuco
+        (cepNumber >= 57000000 && cepNumber <= 57999999) || // Alagoas
+        (cepNumber >= 58000000 && cepNumber <= 58999999) || // Paraíba
+        (cepNumber >= 59000000 && cepNumber <= 59999999) || // Rio Grande do Norte
+        (cepNumber >= 64000000 && cepNumber <= 64999999) || // Piauí
+        (cepNumber >= 65000000 && cepNumber <= 65999999)    // Maranhão
+      ) {
         calculatedShipping = 18;
-      } else if (cepNumber >= 40000000 && cepNumber <= 48999999) {
-        // Bahia
-        calculatedShipping = 25;
-      } else if (cepNumber >= 50000000 && cepNumber <= 56999999) {
-        // Pernambuco
-        calculatedShipping = 30;
-      } else if (cepNumber >= 60000000 && cepNumber <= 63999999) {
-        // Ceará
-        calculatedShipping = 35;
-      } else if (cepNumber >= 70000000 && cepNumber <= 76999999) {
-        // Distrito Federal
-        calculatedShipping = 22;
-      } else if (cepNumber >= 80000000 && cepNumber <= 87999999) {
-        // Paraná
-        calculatedShipping = 20;
-      } else if (cepNumber >= 90000000 && cepNumber <= 99999999) {
-        // Rio Grande do Sul
+      }
+      // Norte - distância média-alta
+      else if (
+        (cepNumber >= 66000000 && cepNumber <= 68999999) || // Pará/Amapá
+        (cepNumber >= 69000000 && cepNumber <= 69999999) || // Acre/Amazonas/Roraima/Rondônia
+        (cepNumber >= 77000000 && cepNumber <= 77999999)    // Tocantins
+      ) {
+        calculatedShipping = 32;
+      }
+      // Centro-Oeste - distância alta
+      else if (
+        (cepNumber >= 70000000 && cepNumber <= 76999999) || // Distrito Federal/Goiás
+        (cepNumber >= 78000000 && cepNumber <= 78999999)    // Mato Grosso/Mato Grosso do Sul
+      ) {
         calculatedShipping = 28;
+      }
+      // Sudeste - distância muito alta
+      else if (
+        (cepNumber >= 1000000 && cepNumber <= 19999999) ||  // São Paulo
+        (cepNumber >= 20000000 && cepNumber <= 28999999) || // Rio de Janeiro
+        (cepNumber >= 29000000 && cepNumber <= 29999999) || // Espírito Santo
+        (cepNumber >= 30000000 && cepNumber <= 39999999)    // Minas Gerais
+      ) {
+        calculatedShipping = 38;
+      }
+      // Sul - distância máxima
+      else if (
+        (cepNumber >= 80000000 && cepNumber <= 87999999) || // Paraná
+        (cepNumber >= 88000000 && cepNumber <= 89999999) || // Santa Catarina
+        (cepNumber >= 90000000 && cepNumber <= 99999999)    // Rio Grande do Sul
+      ) {
+        calculatedShipping = 42;
       }
 
       setShipping(calculatedShipping);
@@ -178,7 +201,7 @@ const Checkout = () => {
             <span>R$ {productPrice.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
-            <span>Frete:</span>
+            <span>Frete (origem: Fortaleza/CE):</span>
             <span>R$ {shipping.toFixed(2)}</span>
           </div>
           <hr className="border-cyan-400/30" />
@@ -189,7 +212,7 @@ const Checkout = () => {
         </div>
 
         <p className="text-sm text-center text-gray-300">
-          O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.
+          Envio a partir de Fortaleza/CE. O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.
         </p>
 
         <button

@@ -9,6 +9,9 @@ const Checkout = () => {
   const productName = searchParams.get('name') || '';
   const productPrice = parseFloat(searchParams.get('price') || '0');
   const [cep, setCep] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [uf, setUf] = useState('');
   const fallbackShipping = 35; // Valor padrão mais alto para longas distâncias
   const [shipping, setShipping] = useState<number>(fallbackShipping);
   const [loadingFrete, setLoadingFrete] = useState(false);
@@ -115,6 +118,11 @@ const Checkout = () => {
       return;
     }
 
+    if (!address || !city || !uf) {
+      toast.error('Por favor, preencha endereço, cidade e estado');
+      return;
+    }
+
     setLoadingPay(true);
     console.log('Iniciando pagamento...');
     
@@ -128,7 +136,10 @@ const Checkout = () => {
         productName: productNameWithShipping,
         price: finalPrice,
         originalPrice: productPrice,
-        shipping: shipping
+        shipping: shipping,
+        address,
+        city,
+        uf
       });
 
       const { data, error } = await supabase.functions.invoke('create-payment', {
@@ -187,6 +198,40 @@ const Checkout = () => {
           />
         </div>
 
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Endereço:</label>
+          <input
+            type="text"
+            placeholder="Rua, número e complemento"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Cidade:</label>
+          <input
+            type="text"
+            placeholder="Cidade"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Estado:</label>
+          <input
+            type="text"
+            placeholder="UF"
+            value={uf}
+            onChange={(e) => setUf(e.target.value.toUpperCase())}
+            maxLength={2}
+            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+          />
+        </div>
+
         <button
           onClick={calculateShipping}
           className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-2 rounded-lg disabled:opacity-50"
@@ -218,7 +263,13 @@ const Checkout = () => {
         <button
           onClick={handlePayment}
           className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-3 rounded-lg hover:scale-105 transition-transform disabled:opacity-50"
-          disabled={loadingPay || !validateCep(cep)}
+          disabled={
+            loadingPay ||
+            !validateCep(cep) ||
+            !address ||
+            !city ||
+            !uf
+          }
         >
           {loadingPay ? 'Processando...' : `Pagar R$ ${total.toFixed(2)}`}
         </button>

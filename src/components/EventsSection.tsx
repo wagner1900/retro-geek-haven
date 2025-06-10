@@ -105,15 +105,15 @@ const EventsSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="bg-black/40 p-4 rounded-lg">
               <p className="text-yellow-400 font-bold">1º Lugar</p>
-              <p className="text-white">Console Retrô + 10 jogos</p>
+              <p className="text-white">Mousepad</p>
             </div>
             <div className="bg-black/40 p-4 rounded-lg">
               <p className="text-gray-400 font-bold">2º Lugar</p>
-              <p className="text-white">Action Figure Limitada</p>
+              <p className="text-white">Funkopop</p>
             </div>
             <div className="bg-black/40 p-4 rounded-lg">
               <p className="text-amber-600 font-bold">3º Lugar</p>
-              <p className="text-white">Kit Mangás Premium</p>
+              <p className="text-white">Placa Decorativa</p>
             </div>
           </div>
         </div>

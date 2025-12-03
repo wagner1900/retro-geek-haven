@@ -1,32 +1,86 @@
 
-import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2 } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { Play, Pause, Volume2, RefreshCw } from 'lucide-react';
 
 const RadioPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack] = useState(0);
+  const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(0.7);
+  const [statusMessage, setStatusMessage] = useState('');
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const playlist = [
-    {
-      name: 'Listen.moe',
-      artist: 'Anime Radio',
-      url: 'https://listen.moe/stream',
-    },
-  ];
+  const playlist = useMemo(
+    () => [
+      {
+        name: 'Listen.moe',
+        artist: 'Anime Radio',
+        url: 'https://listen.moe/stream',
+      },
+      {
+        name: 'J-pop PowerPlay',
+        artist: 'Power 181',
+        url: 'https://listen.power181.com/181-japan.mp3',
+      },
+    ],
+    [],
+  );
 
   const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+      return;
     }
+
+    audio
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+        setStatusMessage('');
+      })
+      .catch(() => {
+        setIsPlaying(false);
+        setStatusMessage('Seu navegador bloqueou a reprodução automática. Clique em play para tentar novamente.');
+      });
   };
 
+
+  
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleStreamIssue = () => {
+      setStatusMessage('Perdemos a conexão. Trocando para uma fonte alternativa...');
+      setCurrentTrack((prev) => (prev + 1) % playlist.length);
+    };
+
+    audio.addEventListener('error', handleStreamIssue);
+    audio.addEventListener('stalled', handleStreamIssue);
+
+    return () => {
+      audio.removeEventListener('error', handleStreamIssue);
+      audio.removeEventListener('stalled', handleStreamIssue);
+    };
+  }, [isPlaying, playlist.length]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.src = playlist[currentTrack].url;
+    audio.load();
+
+    if (isPlaying) {
+      audio
+        .play()
+        .then(() => setStatusMessage(''))
+        .catch(() => setStatusMessage('Não conseguimos tocar esta estação. Tente novamente.'));
+    }
+  }, [currentTrack, isPlaying, playlist]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -69,6 +123,13 @@ const RadioPlayer = () => {
           className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
         />
       </div>
+
+      {statusMessage && (
+        <div className="mt-3 text-xs text-amber-300 flex items-center justify-center space-x-2">
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          <span>{statusMessage}</span>
+        </div>
+      )}
 
       <div className="mt-2 text-xs text-gray-400 text-center">
         Música ambiente para sua experiência geek!

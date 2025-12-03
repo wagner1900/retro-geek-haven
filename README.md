@@ -41,8 +41,8 @@ cp .env.example .env
 # https://believestoresualojageek.netlify.app.
 # Update `VITE_EMAIL_REDIRECT_URL` in `.env` if you deploy elsewhere.
 # Configure your Stripe keys as well:
-# - `VITE_STRIPE_PUBLISHABLE_KEY` for the frontend
-# - `STRIPE_SECRET_KEY` for the Supabase Edge functions
+# - `VITE_STRIPE_PUBLISHABLE_KEY` for the frontend (use a **live** key to aceitar cartões reais)
+# - `STRIPE_SECRET_KEY` for the Supabase Edge functions (use uma chave `sk_live_*`; `sk_test_*` é rejeitada)
 ```
 
 **Edit a file directly in GitHub**

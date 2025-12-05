@@ -160,25 +160,23 @@ const Checkout = () => {
     console.log('Iniciando pagamento...');
     
     try {
+      const shippingAddress = { cep, address, city, uf };
       const finalPrice = productPrice + shipping;
-      
-      // Criar nome do produto incluindo informação do frete
-      const productNameWithShipping = `${productName} (inclui frete: R$ ${shipping.toFixed(2)})`;
-      
+
       console.log('Dados do pagamento:', {
-        productName: productNameWithShipping,
-        price: finalPrice,
-        originalPrice: productPrice,
-        shipping: shipping,
-        address,
-        city,
-        uf
+        productName,
+        productPrice,
+        finalPrice,
+        shipping,
+        shippingAddress,
       });
 
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: { 
-          productName: productNameWithShipping, 
-          price: finalPrice 
+          productName,
+          productPrice,
+          shippingCost: shipping,
+          shippingAddress
         }
       });
 

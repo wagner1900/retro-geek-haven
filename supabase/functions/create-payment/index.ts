@@ -28,7 +28,32 @@ serve(async (req) => {
       throw new Error("Usuário não autenticado");
     }
 
-    const { productName, price } = await req.json();
+    const { productName, productPrice, shippingCost, shippingAddress } = await req.json();
+
+    if (!productName || typeof productName !== "string") {
+      throw new Error("Nome do produto inválido");
+    }
+
+    if (typeof productPrice !== "number" || productPrice <= 0) {
+      throw new Error("Preço do produto inválido");
+    }
+
+    if (typeof shippingCost !== "number" || shippingCost < 0) {
+      throw new Error("Custo de frete inválido");
+    }
+
+    const shippingCity = shippingAddress?.city ?? "";
+    const shippingState = shippingAddress?.uf ?? shippingAddress?.state ?? "";
+    const shippingCep = shippingAddress?.cep ?? "";
+    const shippingLine1 = shippingAddress?.address ?? shippingAddress?.line1 ?? "";
+
+    if (!shippingCity || !shippingState || !shippingCep || !shippingLine1) {
+      throw new Error("Endereço de entrega incompleto");
+    }
+
+    const shippingAmountCents = Math.round(shippingCost * 100);
+    const productAmountCents = Math.round(productPrice * 100);
+    const totalAmountCents = productAmountCents + shippingAmountCents;
 
     // Usar a chave secreta do Stripe configurada (somente modo de produção)
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -54,12 +79,37 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
+      shipping_address_collection: {
+        allowed_countries: ["BR"],
+      },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            display_name: `Envio para ${shippingCity}/${shippingState}`,
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: shippingAmountCents,
+              currency: "brl",
+            },
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 3 },
+              maximum: { unit: "business_day", value: 7 },
+            },
+          },
+        },
+      ],
+      metadata: {
+        shipping_city: shippingCity,
+        shipping_state: shippingState,
+        shipping_cep: shippingCep,
+        shipping_address_line: shippingLine1,
+      },
       line_items: [
         {
           price_data: {
             currency: "brl",
             product_data: { name: productName },
-            unit_amount: Math.round(price * 100), // Converter para centavos
+            unit_amount: productAmountCents,
           },
           quantity: 1,
         },
@@ -79,7 +129,8 @@ serve(async (req) => {
       user_id: user.id,
       stripe_session_id: session.id,
       product_name: productName,
-      amount: Math.round(price * 100),
+      amount: totalAmountCents,
+      currency: "brl",
       status: "pending"
     });
 

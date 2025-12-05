@@ -112,7 +112,7 @@ const PaymentSuccess = () => {
               Você receberá um email de confirmação em breve com os detalhes da entrega.
             </p>
             <p className="text-gray-300">
-              O endereço informado no checkout do Stripe será usado para calcular e confirmar o frete.
+              O endereço informado antes do pagamento será usado diretamente para envio, sem exigir um novo checkout de frete no Stripe.
             </p>
             <p className="text-gray-300">
               O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.

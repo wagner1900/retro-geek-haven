@@ -10,6 +10,7 @@ import EventsSection from '@/components/EventsSection';
 import Leaderboard from '@/components/Leaderboard';
 import Footer from '@/components/Footer';
 import Auth from '@/components/Auth';
+import SEO from '@/components/SEO';
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
@@ -19,6 +20,39 @@ const Index = () => {
   const [userPoints, setUserPoints] = useState(() => {
     return parseInt(localStorage.getItem('believestore_points') || '0');
   });
+
+  const siteUrl = typeof window !== 'undefined'
+    ? (import.meta.env.VITE_SITE_URL || window.location.origin)
+    : '';
+
+  const pageDescription = 'Explore produtos geeks exclusivos, mini-games com sistema de pontos e eventos presenciais na BelieveStore.';
+  const pageKeywords = [
+    'loja geek',
+    'mini-games online',
+    'eventos geek',
+    'colecionáveis',
+    'BelieveStore',
+    'produtos nerd',
+  ];
+
+  const structuredData = siteUrl ? {
+    '@context': 'https://schema.org',
+    '@type': 'Store',
+    name: 'BelieveStore',
+    url: siteUrl,
+    description: pageDescription,
+    image: 'https://lovable.dev/opengraph-image-p98pqg.png',
+    sameAs: [
+      'https://twitter.com/believestore',
+      'https://www.facebook.com/believestore',
+      'https://www.instagram.com/believestore',
+    ],
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${siteUrl}/?search={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  } : undefined;
 
   useEffect(() => {
     let mounted = true;
@@ -218,44 +252,54 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      <div className="relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-cyan-400 rounded-full animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-pink-400 rounded-full animate-bounce"></div>
-          <div className="absolute bottom-20 left-1/3 w-12 h-12 bg-yellow-400 rounded-full animate-ping"></div>
-        </div>
-        
-        <Header 
-          userPoints={userPoints} 
-          user={user} 
-          onAuthClick={() => setShowAuth(!showAuth)}
-        />
-        
-        {showAuth && !user && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="relative w-full max-w-md">
-              <button
-                onClick={() => setShowAuth(false)}
-                className="absolute -top-4 -right-4 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors z-10"
-              >
-                ×
-              </button>
-              <Auth user={user} onAuthChange={handleAuthChange} />
-            </div>
+    <>
+      <SEO
+        title="BelieveStore | Loja Geek com Mini-Games e Eventos"
+        description={pageDescription}
+        url="/"
+        keywords={pageKeywords}
+        structuredData={structuredData}
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="relative overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <div className="absolute top-10 left-10 w-20 h-20 bg-cyan-400 rounded-full animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-16 h-16 bg-pink-400 rounded-full animate-bounce"></div>
+            <div className="absolute bottom-20 left-1/3 w-12 h-12 bg-yellow-400 rounded-full animate-ping"></div>
           </div>
-        )}
-        
-        <Hero />
-        <ProductCatalog user={user} />
-        <MiniGames onPointsEarned={addPoints} user={user} />
-        <Leaderboard currentUserPoints={userPoints} />
-        <EventsSection />
-        <RadioPlayer />
-        <Footer />
+
+          <Header
+            userPoints={userPoints}
+            user={user}
+            onAuthClick={() => setShowAuth(!showAuth)}
+          />
+
+          {showAuth && !user && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="relative w-full max-w-md">
+                <button
+                  onClick={() => setShowAuth(false)}
+                  className="absolute -top-4 -right-4 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors z-10"
+                >
+                  ×
+                </button>
+                <Auth user={user} onAuthChange={handleAuthChange} />
+              </div>
+            </div>
+          )}
+
+          <Hero />
+          <ProductCatalog user={user} />
+          <MiniGames onPointsEarned={addPoints} user={user} />
+          <Leaderboard currentUserPoints={userPoints} />
+          <EventsSection />
+          <RadioPlayer />
+          <Footer />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

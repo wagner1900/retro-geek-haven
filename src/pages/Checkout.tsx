@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import SEO from '@/components/SEO';
 
 const Checkout = () => {
   const [searchParams] = useSearchParams();
@@ -16,6 +17,38 @@ const Checkout = () => {
   const [shipping, setShipping] = useState<number>(fallbackShipping);
   const [loadingFrete, setLoadingFrete] = useState(false);
   const [loadingPay, setLoadingPay] = useState(false);
+
+  const siteUrl = typeof window !== 'undefined'
+    ? (import.meta.env.VITE_SITE_URL || window.location.origin)
+    : '';
+
+  const pageTitle = productName
+    ? `Comprar ${productName} | Checkout BelieveStore`
+    : 'Checkout | BelieveStore';
+
+  const pageDescription = productName
+    ? `Finalize a compra de ${productName} com cálculo de frete dinâmico e pagamento seguro na BelieveStore.`
+    : 'Finalize suas compras com frete calculado automaticamente e pagamento seguro na BelieveStore.';
+
+  const keywords = [
+    'checkout geek',
+    'pagamento seguro',
+    'BelieveStore',
+    'frete calculado',
+    'loja geek',
+  ];
+
+  const checkoutStructuredData = siteUrl ? {
+    '@context': 'https://schema.org',
+    '@type': 'CheckoutPage',
+    name: pageTitle,
+    description: pageDescription,
+    url: `${siteUrl}/checkout`,
+    potentialAction: {
+      '@type': 'BuyAction',
+      target: `${siteUrl}/checkout`,
+    },
+  } : undefined;
 
   const formatCep = (value: string) => {
     const numbers = value.replace(/\D/g, '');
@@ -180,11 +213,20 @@ const Checkout = () => {
   const total = productPrice + shipping;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
-      <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-cyan-400/30 w-full max-w-md space-y-4 text-white">
-        <h1 className="text-2xl font-bold text-center">Finalizar Compra</h1>
-        <p><strong>Produto:</strong> {productName}</p>
-        <p><strong>Preço:</strong> R$ {productPrice.toFixed(2)}</p>
+    <>
+      <SEO
+        title={pageTitle}
+        description={pageDescription}
+        url="/checkout"
+        keywords={keywords}
+        structuredData={checkoutStructuredData}
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+        <div className="bg-black/40 backdrop-blur-sm rounded-lg p-8 border border-cyan-400/30 w-full max-w-md space-y-4 text-white">
+          <h1 className="text-2xl font-bold text-center">Finalizar Compra</h1>
+          <p><strong>Produto:</strong> {productName}</p>
+          <p><strong>Preço:</strong> R$ {productPrice.toFixed(2)}</p>
 
         <div className="space-y-2">
           <label className="block text-sm font-medium">CEP de entrega:</label>

@@ -15,15 +15,10 @@ serve(async (req) => {
   try {
     console.log('Iniciando busca de produtos do Stripe...');
     
-    // Usar a chave secreta do Stripe configurada (somente modo de produção)
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
 
     if (!stripeKey) {
-      throw new Error("STRIPE_SECRET_KEY não configurada para produção");
-    }
-
-    if (stripeKey.startsWith("sk_test")) {
-      throw new Error("STRIPE_SECRET_KEY deve ser uma chave live (sk_live_*) para aceitar cartões reais");
+      throw new Error("STRIPE_SECRET_KEY não configurada");
     }
 
     const stripe = new Stripe(stripeKey, {

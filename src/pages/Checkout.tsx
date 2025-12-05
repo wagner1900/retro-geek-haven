@@ -226,95 +226,96 @@ const Checkout = () => {
           <p><strong>Produto:</strong> {productName}</p>
           <p><strong>Preço:</strong> R$ {productPrice.toFixed(2)}</p>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">CEP de entrega:</label>
-          <input
-            type="text"
-            placeholder="00000-000"
-            value={cep}
-            onChange={handleCepChange}
-            maxLength={9}
-            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Endereço:</label>
-          <input
-            type="text"
-            placeholder="Rua, número e complemento"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Cidade:</label>
-          <input
-            type="text"
-            placeholder="Cidade"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Estado:</label>
-          <input
-            type="text"
-            placeholder="UF"
-            value={uf}
-            onChange={(e) => setUf(e.target.value.toUpperCase())}
-            maxLength={2}
-            className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
-          />
-        </div>
-
-        <button
-          onClick={calculateShipping}
-          className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-2 rounded-lg disabled:opacity-50"
-          disabled={loadingFrete || !cep}
-        >
-          {loadingFrete ? 'Calculando...' : 'Calcular Frete'}
-        </button>
-
-        <div className="bg-white/10 rounded-lg p-4 space-y-2">
-          <div className="flex justify-between">
-            <span>Produto:</span>
-            <span>R$ {productPrice.toFixed(2)}</span>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">CEP de entrega:</label>
+            <input
+              type="text"
+              placeholder="00000-000"
+              value={cep}
+              onChange={handleCepChange}
+              maxLength={9}
+              className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+            />
           </div>
-          <div className="flex justify-between">
-            <span>Frete (origem: Fortaleza/CE):</span>
-            <span>R$ {shipping.toFixed(2)}</span>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Endereço:</label>
+            <input
+              type="text"
+              placeholder="Rua, número e complemento"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+            />
           </div>
-          <hr className="border-cyan-400/30" />
-          <div className="flex justify-between text-lg font-bold text-cyan-400">
-            <span>Total a Pagar:</span>
-            <span>R$ {total.toFixed(2)}</span>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Cidade:</label>
+            <input
+              type="text"
+              placeholder="Cidade"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+            />
           </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Estado:</label>
+            <input
+              type="text"
+              placeholder="UF"
+              value={uf}
+              onChange={(e) => setUf(e.target.value.toUpperCase())}
+              maxLength={2}
+              className="w-full px-4 py-2 bg-black/50 border border-cyan-400/30 rounded-lg focus:border-cyan-400 focus:outline-none"
+            />
+          </div>
+
+          <button
+            onClick={calculateShipping}
+            className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-2 rounded-lg disabled:opacity-50"
+            disabled={loadingFrete || !cep}
+          >
+            {loadingFrete ? 'Calculando...' : 'Calcular Frete'}
+          </button>
+
+          <div className="bg-white/10 rounded-lg p-4 space-y-2">
+            <div className="flex justify-between">
+              <span>Produto:</span>
+              <span>R$ {productPrice.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Frete (origem: Fortaleza/CE):</span>
+              <span>R$ {shipping.toFixed(2)}</span>
+            </div>
+            <hr className="border-cyan-400/30" />
+            <div className="flex justify-between text-lg font-bold text-cyan-400">
+              <span>Total a Pagar:</span>
+              <span>R$ {total.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <p className="text-sm text-center text-gray-300">
+            Envio a partir de Fortaleza/CE. O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.
+          </p>
+
+          <button
+            onClick={handlePayment}
+            className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-3 rounded-lg hover:scale-105 transition-transform disabled:opacity-50"
+            disabled={
+              loadingPay ||
+              !validateCep(cep) ||
+              !address ||
+              !city ||
+              !uf
+            }
+          >
+            {loadingPay ? 'Processando...' : `Pagar R$ ${total.toFixed(2)}`}
+          </button>
         </div>
-
-        <p className="text-sm text-center text-gray-300">
-          Envio a partir de Fortaleza/CE. O produto será entregue aos Correios em até 7 dias úteis após a confirmação do pagamento.
-        </p>
-
-        <button
-          onClick={handlePayment}
-          className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-3 rounded-lg hover:scale-105 transition-transform disabled:opacity-50"
-          disabled={
-            loadingPay ||
-            !validateCep(cep) ||
-            !address ||
-            !city ||
-            !uf
-          }
-        >
-          {loadingPay ? 'Processando...' : `Pagar R$ ${total.toFixed(2)}`}
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -83,25 +83,6 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      shipping_address_collection: {
-        allowed_countries: ["BR"],
-      },
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            display_name: `Envio para ${shippingCity}/${shippingState}`,
-            type: "fixed_amount",
-            fixed_amount: {
-              amount: shippingAmountCents,
-              currency: "brl",
-            },
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 3 },
-              maximum: { unit: "business_day", value: 7 },
-            },
-          },
-        },
-      ],
       metadata: {
         shipping_city: shippingCity,
         shipping_state: shippingState,
@@ -114,6 +95,17 @@ serve(async (req) => {
             currency: "brl",
             product_data: { name: productName },
             unit_amount: productAmountCents,
+          },
+          quantity: 1,
+        },
+        {
+          price_data: {
+            currency: "brl",
+            product_data: {
+              name: `Frete para ${shippingCity}/${shippingState}`,
+              description: `Envio para ${shippingCep}`,
+            },
+            unit_amount: shippingAmountCents,
           },
           quantity: 1,
         },

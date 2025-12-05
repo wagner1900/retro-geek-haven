@@ -19,7 +19,11 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Cabeçalho Authorization ausente");
+    }
+
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
@@ -55,15 +59,10 @@ serve(async (req) => {
     const productAmountCents = Math.round(productPrice * 100);
     const totalAmountCents = productAmountCents + shippingAmountCents;
 
-    // Usar a chave secreta do Stripe configurada (somente modo de produção)
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
 
     if (!stripeKey) {
-      throw new Error("STRIPE_SECRET_KEY não configurada para produção");
-    }
-
-    if (stripeKey.startsWith("sk_test")) {
-      throw new Error("STRIPE_SECRET_KEY deve ser uma chave live (sk_live_*) para aceitar cartões reais");
+      throw new Error("STRIPE_SECRET_KEY não configurada");
     }
     
     const stripe = new Stripe(stripeKey, {
@@ -75,6 +74,11 @@ serve(async (req) => {
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
     }
+
+    const origin =
+      req.headers.get("origin") ||
+      Deno.env.get("SITE_URL") ||
+      "http://localhost:5173";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -115,8 +119,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/`,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/`,
     });
 
     // Salvar pedido no banco

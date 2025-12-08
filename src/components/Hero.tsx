@@ -23,6 +23,14 @@ const Hero = () => {
             >
               JOGAR MINI-GAMES
             </a>
+            <a
+              href="https://wa.me/5585981849737"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-green-500/25 flex items-center gap-2"
+            >
+              FALAR NO WHATSAPP
+            </a>
           </div>
         </div>
       </div>

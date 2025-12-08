@@ -1,5 +1,5 @@
 
-import { Mail, Phone, Instagram } from 'lucide-react';
+import { Mail, Phone, Instagram, MessageCircle } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -32,11 +32,20 @@ const Footer = () => {
                 <Mail className="w-4 h-4 text-cyan-400" />
               </a>
               <a
-                href="tel:+5511999999999"
+                href="tel:+5585981849737"
                 className="w-8 h-8 bg-purple-400/20 rounded-full flex items-center justify-center hover:bg-purple-400/40 transition-colors"
                 aria-label="Telefone"
               >
                 <Phone className="w-4 h-4 text-purple-400" />
+              </a>
+              <a
+                href="https://wa.me/5585981849737"
+                className="w-8 h-8 bg-green-400/20 rounded-full flex items-center justify-center hover:bg-green-400/40 transition-colors"
+                aria-label="WhatsApp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="w-4 h-4 text-green-400" />
               </a>
               <a
                 href="https://instagram.com/believestor.e"
@@ -66,7 +75,10 @@ const Footer = () => {
             <h4 className="text-white font-bold mb-4">Contato</h4>
             <ul className="space-y-2 text-gray-400">
               <li>📧 contato@believestore.com</li>
-              <li>📱 (11) 99999-9999</li>
+              <li>📱 (85) 98184-9737</li>
+              <li>
+                💬 <a href="https://wa.me/5585981849737" target="_blank" rel="noopener noreferrer" className="hover:text-green-400">WhatsApp Suporte</a>
+              </li>
               <li>📸 <a href="https://instagram.com/believestor.e" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400">@believestor.e</a></li>
               <li>📍 São Paulo, SP</li>
               <li>🕒 Seg-Sex 9h-18h</li>
